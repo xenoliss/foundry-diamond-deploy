@@ -1,0 +1,17 @@
+FROM rust:latest
+
+RUN apt-get update && \
+    apt-get install sudo -y
+
+RUN  rustup component add rustfmt
+
+RUN useradd -s /bin/bash -m developer && \
+    chmod u+s /sbin/unix_chkpwd && \
+    echo "developer:developer" | chpasswd && \
+    groupadd docker && \
+    usermod -aG docker developer && \
+    usermod -aG sudo developer
+
+USER developer
+
+RUN cargo install --git https://github.com/foundry-rs/foundry foundry-cli anvil --bins --locked
